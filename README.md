@@ -1,0 +1,307 @@
+# ChromeWalk
+
+**A real, local browser for your AI.** ChromeWalk gives coding and research agents a
+private, standalone Chrome-for-Testing instance they drive directly on your own machine —
+no cloud relay, no tunnel, never your personal Chrome profile. It fetches WAF-protected
+pages, captures full network/screenshot evidence, harvests e-commerce catalogs, runs
+performance/accessibility inspection, and drives cross-engine QA (Chromium/WebKit/Firefox),
+all exposed to your AI client as standard [MCP](https://modelcontextprotocol.io) tools.
+
+This repository is the **public listing and install package** for ChromeWalk. It does not
+contain ChromeWalk's source code, its signing keys, or its server code — those stay in the
+private engineering repository. What's here is everything a client (Claude Desktop, Claude
+Code, Codex, Cursor, VS Code, Gemini CLI, Windsurf/Cline/Continue, ...) needs to discover and
+install the compiled, licensed ChromeWalk build, plus the packaging manifests for each
+distribution channel (MCP Registry, Gemini CLI extension, Claude Code plugin, Cursor
+directory).
+
+- Website: https://chromewalk.com
+- Docs: https://chromewalk.com/docs/
+- What is ChromeWalk: https://chromewalk.com/docs/what-is-chromewalk.html
+- Privacy: https://chromewalk.com/privacy.html
+- Terms: https://chromewalk.com/terms.html
+- Support / FAQ: https://chromewalk.com/faq.html
+- License terms: [`LICENSE`](./LICENSE) (full EULA also at https://chromewalk.com/LICENSE.txt)
+
+---
+
+## License — a key is required
+
+ChromeWalk is **proprietary software and requires a license**. There is no
+anonymous or keyless trial mode in the shipped default build: until a license key is
+activated on the machine, every ChromeWalk tool call returns a "license required" error.
+(The offline grace window applies only to an already-activated license that temporarily
+cannot reach the license server - it is not a keyless trial.)
+
+1. Sign up at **https://chromewalk.com/register.html** with your email. Your license key is
+   tied to that email address.
+2. Install ChromeWalk for your client (below).
+3. Activate with either:
+   - the `CHROMEWALK_LICENSE` environment variable (read once when the MCP server starts;
+     it activates the device if it is not already activated), or
+   - `cw activate <key>` from a terminal after install, or
+   - pasting the key into the client's own extension/plugin settings UI (Claude Desktop
+     `.mcpb` exposes a `license_key` field in `user_config`).
+
+ChromeWalk does **not** collect the URLs you visit, page content, file paths, or credentials.
+See the [Privacy Policy](https://chromewalk.com/privacy.html) for exactly what limited
+account/license/device-activation telemetry is collected.
+
+---
+
+## Install the ChromeWalk binary (once, per machine)
+
+Every client below talks to one local ChromeWalk install. Install it first:
+
+**Windows** — one-line installer (downloads the release bundle, verifies its SHA-256, and
+installs the compiled `chromewalk.exe` — no Python source, no venv to build — plus a `cw.cmd`
+terminal shim, to `%LOCALAPPDATA%\Programs\ChromeWalk`, added to your **user** PATH; no admin
+required):
+
+```powershell
+powershell -c "irm https://chromewalk.com/install.ps1 | iex"
+```
+
+or download the installer directly: https://chromewalk.com/download.html
+(`ChromeWalk-Setup.exe`, built with Inno Setup). **Note:** the code-signing certificate for
+this installer is still pending, so until a signed build is published, Windows SmartScreen
+may warn ("Windows protected your PC") the first time you run it — click "More info" ->
+"Run anyway" to proceed, or verify the SHA-256 checksum published alongside the download
+first if you'd rather not click through the warning.
+
+**macOS** — installs the compiled `chromewalk` binary to `/usr/local/bin`, plus a `cw` shim:
+
+```bash
+curl -fsSL https://chromewalk.com/install.sh | bash
+```
+
+or download the `.pkg` GUI installer from https://chromewalk.com/download.html once it is
+published (see `deploy/installer/macos/` in the engineering repo — **this macOS packaging is
+untested**: no CI run or real Mac has confirmed it yet, treat it as best-effort until a
+validated release says otherwise).
+
+**Linux** — `install.sh` above also works on Linux, but there is no compiled Linux binary or
+packaged installer yet; it falls back to a source install.
+
+After install, run `cw connect` from a terminal — it detects every supported client already
+installed on your machine and registers ChromeWalk in each one automatically (idempotent,
+config-backed-up). The per-client steps below are the manual equivalent, and what `cw
+connect` does under the hood for each one.
+
+---
+
+## Per-client install
+
+> **Read this first.** For every client below, the **recommended** step is to run
+> `cw connect` (or `cw connect <client-name>`, e.g. `cw connect codex`) — it detects each
+> client already installed on your machine and writes the correct config for you
+> (idempotent, backs up the existing config first).
+>
+> If you'd rather hand-edit a config, the launch command is the same shape on every platform:
+> **command `chromewalk`, args `["mcp"]`** — never `cw`, and never through a shell (`cmd /c`
+> or otherwise). `cw`/`cw.cmd` is a convenience shim for typing at a terminal; on Windows it
+> is a `.cmd` file, which `child_process.spawn`/Rust's `Command` (what MCP clients actually
+> use to launch a local server) cannot execute directly without a shell — they fail with
+> `ENOENT` even though typing `cw` yourself works fine. `chromewalk` is a real executable
+> (`chromewalk.exe` on Windows, `chromewalk` on macOS) with no such limitation, which is why
+> every config below uses it, identically on Windows and macOS/Linux.
+>
+> The installer puts `chromewalk` (and the `cw` shim) on your **user PATH**, so a bare
+> `"command": "chromewalk"` resolves correctly once you've opened a new terminal/restarted the
+> client after installing. If a client can't find it on PATH (or you want a config that
+> doesn't depend on PATH at all), use the absolute install path instead:
+> - Windows: `%LOCALAPPDATA%\Programs\ChromeWalk\chromewalk.exe`
+> - macOS: `/usr/local/bin/chromewalk`
+
+### Claude Desktop (.mcpb bundle)
+
+1. Download the bundle for your platform from the latest
+   [GitHub Release](https://github.com/gator8125/ChromeWalk-MCP/releases). Today that's
+   **`chromewalk-9.0.0-win32-x64.mcpb`** (Windows x64) — the only bundle actually built and
+   published. macOS (`darwin-arm64` / `darwin-x64`) bundles are planned (see
+   `.github/workflows/mcpb-binary.yml`, currently manual-dispatch-only and unvalidated) but
+   are **not yet published**; there is no Linux `.mcpb` bundle.
+2. Double-click it, or drag it onto Claude Desktop's Settings → Extensions panel.
+3. Enter your license key in the extension's settings (`license_key` field), or run
+   `cw activate <key>` if you also installed the `cw` CLI.
+
+Full walkthrough: https://chromewalk.com/docs/install-claude-desktop.html
+
+### Claude Code
+
+Recommended — install the plugin from this repository's marketplace:
+
+```
+/plugin marketplace add gator8125/ChromeWalk-MCP
+/plugin install chromewalk@chromewalk
+```
+
+or let `cw connect claude-code` register it for you — this runs
+`claude mcp add chromewalk -- <path-to-chromewalk> mcp` with the absolute installed binary
+path, avoiding the `cw.cmd` problem described above. If you register it by hand instead, do
+the same:
+
+```
+claude mcp add chromewalk -- chromewalk mcp
+```
+
+A project-scoped `.mcp.json` you can copy into your own repo is included at
+[`/.mcp.json`](./.mcp.json) (uses the `chromewalk mcp` form, same on every platform).
+
+Full walkthrough: https://chromewalk.com/docs/install-claude-code.html
+
+### OpenAI Codex CLI
+
+Recommended: `cw connect codex` (backs up your existing `config.toml` first). To add it by
+hand, add to `~/.codex/config.toml`:
+
+```toml
+[mcp_servers.chromewalk]
+command = 'chromewalk'
+args = ['mcp']
+startup_timeout_sec = 30
+tool_timeout_sec = 1200
+```
+
+(Same on Windows and macOS/Linux — no `cmd /c` wrapper needed; use the absolute path,
+e.g. `'C:\Users\<you>\AppData\Local\Programs\ChromeWalk\chromewalk.exe'` or
+`'/usr/local/bin/chromewalk'`, if `chromewalk` isn't resolving from PATH.)
+`startup_timeout_sec = 30` and `tool_timeout_sec = 1200` are intentional, not defaults:
+Codex's own defaults (10s startup / 60s per tool call) are too short for ChromeWalk's
+real-browser tools, which can legitimately run for several minutes on a heavy fetch/harvest.
+
+Full walkthrough: https://chromewalk.com/docs/install-codex.html
+
+### Cursor
+
+Click **Add to Cursor**, or add the block below to `~/.cursor/mcp.json` / your project's
+`.cursor/mcp.json` by hand:
+
+[![Add ChromeWalk to Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/install-mcp?name=chromewalk&config=eyJjb21tYW5kIjoiY2hyb21ld2FsayIsImFyZ3MiOlsibWNwIl19)
+
+(The badge links through `https://cursor.com/install-mcp?...`, Cursor's own HTTPS
+install-link redirector, rather than the `cursor://...` deeplink form directly — GitHub
+strips non-`http(s)` link targets from rendered Markdown, so a bare `cursor://` href would
+be dropped from this page. See `cursor.com/docs/context/mcp/install-links` for the deeplink
+format the redirector wraps.)
+
+```json
+{
+  "mcpServers": {
+    "chromewalk": {
+      "command": "chromewalk",
+      "args": ["mcp"]
+    }
+  }
+}
+```
+
+(Same on Windows and macOS/Linux. If `chromewalk` isn't resolving from PATH, use the
+absolute install path instead: `%LOCALAPPDATA%\Programs\ChromeWalk\chromewalk.exe` on
+Windows, `/usr/local/bin/chromewalk` on macOS.)
+
+Community directory listing text and submission notes: [`docs/cursor-directory-listing.md`](./docs/cursor-directory-listing.md).
+
+Full walkthrough: https://chromewalk.com/docs/install-cursor.html
+
+### VS Code / GitHub Copilot (MCP)
+
+Add to your user or workspace `mcp.json` (`servers` key, not `mcpServers` — VS Code's schema
+differs from Claude's):
+
+```json
+{
+  "servers": {
+    "chromewalk": {
+      "type": "stdio",
+      "command": "chromewalk",
+      "args": ["mcp"]
+    }
+  }
+}
+```
+
+(Same on Windows and macOS/Linux. If `chromewalk` isn't resolving from PATH, use the
+absolute install path instead: `%LOCALAPPDATA%\Programs\ChromeWalk\chromewalk.exe` on
+Windows, `/usr/local/bin/chromewalk` on macOS.)
+
+Full walkthrough: https://chromewalk.com/docs/install-vscode.html
+
+### Gemini CLI
+
+Install the extension from this repository:
+
+```
+gemini extensions install https://github.com/gator8125/ChromeWalk-MCP
+```
+
+This uses [`gemini-extension.json`](./gemini-extension.json) and [`GEMINI.md`](./GEMINI.md)
+at the repo root. This repo ships no source or binary, so the extension's `mcpServers` entry
+needs `chromewalk` (installed per the steps above) already on `PATH` — it uses the
+`command: "chromewalk", args: ["mcp"]` form described above, identically on every platform,
+so it launches correctly under Gemini CLI's own no-shell process spawning. Run `cw connect
+gemini-cli` after install to have it verified/re-written for your machine, or run
+`cw connect` to cover every detected client at once.
+
+Full walkthrough: https://chromewalk.com/docs/install-gemini-cli.html
+
+### Windsurf / Cline / Continue
+
+All three read a `mcpServers` block similar to Claude Desktop's. Add:
+
+```json
+{
+  "mcpServers": {
+    "chromewalk": {
+      "command": "chromewalk",
+      "args": ["mcp"]
+    }
+  }
+}
+```
+
+(Same on Windows and macOS/Linux. If `chromewalk` isn't resolving from PATH, use the
+absolute install path instead: `%LOCALAPPDATA%\Programs\ChromeWalk\chromewalk.exe` on
+Windows, `/usr/local/bin/chromewalk` on macOS.)
+
+- Windsurf: `~/.codeium/windsurf/mcp_config.json` — https://chromewalk.com/docs/install-windsurf.html
+- Cline: VS Code global storage `.../saoudrizwan.claude-dev/settings/cline_mcp_settings.json` — https://chromewalk.com/docs/install-cline.html
+- Continue: `~/.continue/config.json` — https://chromewalk.com/docs/install-continue.html
+
+### Any other MCP-capable client
+
+Generic stdio launch command: `chromewalk mcp` (not `cw` — see the note above), identically
+on Windows and macOS/Linux, no shell involved. This is exactly what `cw connect` writes for
+JSON-config clients. See https://chromewalk.com/docs/install-generic-mcp.html.
+
+---
+
+## What's in this repository
+
+```
+README.md                    - this file
+LICENSE                      - proprietary license notice (see chromewalk.com/LICENSE.txt for full EULA)
+SECURITY.md                  - how to report a vulnerability
+CHANGELOG.md                 - pointer to the release changelog
+server.json                  - MCP Registry server descriptor
+gemini-extension.json        - Gemini CLI extension manifest
+GEMINI.md                    - context file loaded by the Gemini CLI extension
+.mcp.json                    - example Claude Code project-scope MCP config
+.claude-plugin/plugin.json       - Claude Code plugin manifest
+.claude-plugin/marketplace.json  - Claude Code marketplace listing (this repo, one plugin)
+.github/ISSUE_TEMPLATE/      - bug report / feature request templates
+docs/cursor-directory-listing.md - Cursor community-directory submission text
+```
+
+No `.py`, no `config.php`, no signing material, and no server code live in this repository.
+The compiled `.mcpb` bundle and platform installers are attached to
+[GitHub Releases](https://github.com/gator8125/ChromeWalk-MCP/releases); the license/activation
+server is not part of this repo at all.
+
+## Support
+
+- Docs: https://chromewalk.com/docs/
+- FAQ: https://chromewalk.com/faq.html
+- Issues: use this repository's [issue tracker](https://github.com/gator8125/ChromeWalk-MCP/issues)
+  for install/packaging problems. For license/account issues, use the contact info in the
+  Privacy Policy / Terms of Use at https://chromewalk.com.

@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Documentation
+    url: https://chromewalk.com/docs/
+    about: Install guides and tool reference for every supported client.
+  - name: FAQ / Support
+    url: https://chromewalk.com/faq.html
+    about: Common questions, licensing, and account/support contact.
+  - name: Report a security vulnerability
+    url: https://github.com/gator8125/ChromeWalk-MCP/security/advisories/new
+    about: Please use private advisory reporting instead of a public issue.

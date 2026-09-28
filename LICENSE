@@ -1,0 +1,71 @@
+ChromeWalk End User License Agreement (EULA)
+Copyright (c) CassiCode. All rights reserved.
+
+ChromeWalk is proprietary software, provided under a license. It is
+NOT open source. This repository (the "ChromeWalk" GitHub repository) contains only
+listing, packaging, and install material for ChromeWalk; it contains no ChromeWalk
+source code. The software itself (the compiled ChromeWalk build you download and run
+locally) is licensed to you, not sold, under the terms below. By downloading,
+installing, activating, or using ChromeWalk you agree to this Agreement. If you do
+not agree, do not install or use it.
+
+This file is reproduced verbatim from the ChromeWalk EULA shipped with the product
+(also published at https://chromewalk.com/LICENSE.txt). If the two ever differ, the
+copy at https://chromewalk.com/LICENSE.txt is authoritative.
+
+1. LICENSE GRANT
+   Subject to this Agreement, CassiCode grants you a personal, non-exclusive,
+   non-transferable, revocable license to install and use ChromeWalk, for your
+   own lawful personal or internal business purposes. The software is
+   licensed, not sold. CassiCode retains all right, title, and interest in it.
+
+2. LICENSE KEY & ACTIVATION
+   Use of ChromeWalk requires a valid license key obtained from chromewalk.com and
+   activation of your installation. Each license may be bound to a limited number of
+   devices; ChromeWalk generates a device-derived installation identifier for the
+   purpose of activating and enforcing your license and delivering updates. You may
+   not share, resell, sublicense, or transfer your license key.
+
+3. RESTRICTIONS
+   You may NOT, in whole or in part:
+   (a) redistribute, republish, resell, rent, lease, or make ChromeWalk available to
+       any third party;
+   (b) remove, disable, or circumvent the license, activation, or update mechanisms;
+   (c) reverse engineer, decompile, or attempt to derive source for the purpose of
+       creating a competing or redistributable product, except to the extent this
+       restriction is prohibited by applicable law;
+   (d) use ChromeWalk for any unlawful purpose or in violation of the Terms of Use.
+   Unauthorized copying, distribution, or use is a breach of this Agreement and may
+   infringe copyright and other laws.
+
+4. UPDATES
+   ChromeWalk may check for and apply updates from chromewalk.com (integrity-verified).
+   Updates are provided under this same Agreement. Security updates may be required.
+
+5. DATA
+   ChromeWalk collects limited account, license, device-activation, and anonymous usage
+   data as described in the Privacy Policy and Terms of Use at chromewalk.com. It does
+   NOT collect the URLs you visit, page content, file paths, or credentials.
+
+6. TERMINATION
+   This license terminates automatically if you breach it, and CassiCode may revoke a
+   license for misuse. On termination you must stop using and remove ChromeWalk.
+
+7. NO WARRANTY; LIMITATION OF LIABILITY
+   ChromeWalk is provided "AS IS" without warranty of any kind. To the maximum extent
+   permitted by law, CassiCode is not liable for any damages arising from your use of
+   ChromeWalk, including how you use it against third-party sites.
+
+8. GENERAL
+   This Agreement is governed by the laws applicable to CassiCode's jurisdiction.
+   Questions: chromewalk.com. Not legal advice; consult counsel for your jurisdiction.
+
+---
+
+NOTE ON THIS REPOSITORY SPECIFICALLY: the files in this GitHub repository (README,
+issue templates, packaging manifests such as server.json, gemini-extension.json, and
+the .claude-plugin/ files) are listing and install metadata, not the ChromeWalk
+software itself, and are provided so that MCP clients and package directories can
+discover and install ChromeWalk under the EULA above. No separate open-source license
+is granted to this repository's contents beyond what is needed for that discovery and
+install purpose.

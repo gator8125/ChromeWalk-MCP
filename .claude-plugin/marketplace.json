@@ -1,0 +1,15 @@
+{
+  "name": "chromewalk",
+  "description": "ChromeWalk - real local browser automation for AI agents (WAF-safe fetch, evidence capture, e-commerce harvesting, cross-engine QA). Proprietary - requires a license key from chromewalk.com.",
+  "owner": {
+    "name": "CassiCode",
+    "url": "https://chromewalk.com"
+  },
+  "plugins": [
+    {
+      "name": "chromewalk",
+      "source": "./",
+      "description": "Real local browser automation - WAF-safe fetch, full-evidence capture, e-commerce harvesting, cross-engine QA. Requires a license key from chromewalk.com."
+    }
+  ]
+}
