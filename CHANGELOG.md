@@ -2,7 +2,7 @@
 
 Release notes for ChromeWalk live with each [GitHub Release](https://github.com/gator8125/ChromeWalk-MCP/releases) —
 every tagged release (`vX.Y.Z`) has its own notes describing what changed, alongside the
-downloadable per-platform `.mcpb` bundle(s) (e.g. `chromewalk-11.0.0-win32-x64.mcpb` for
+downloadable per-platform `.mcpb` bundle(s) (e.g. `chromewalk-11.0.1-win32-x64.mcpb` for
 Windows x64) and platform installers.
 
 This repository is a listing/install package, not the ChromeWalk source tree, so it does not
@@ -12,6 +12,19 @@ refactors, and packaging work across many pre-release forks). What you get here 
 - The current `server.json` / `gemini-extension.json` / plugin manifests, versioned to match
   the latest release.
 - The **user-facing** highlights for that release, copied into each GitHub Release's notes.
+
+## 11.0.1
+
+**Hotfix, recommended for all 11.0.0 users.**
+- Fixes pages that never load: smoke reporting "timeout: document never became interactive", and
+  fetch ending on about:blank. This was most visible when the ChromeWalk data folder is on a slower
+  (HDD) disk. Navigations Chrome cancels while a fresh profile is still starting are now retried.
+- Removes a redundant cookie-clear step that stalled each browser launch by up to 30 s.
+- `fetch` no longer crashes when printing page text that the Windows console can't display.
+- The documented opt-out `CW_TELEMETRY=off` now actually turns telemetry off. Before, only
+  `CHROMEWALK_NO_TELEMETRY` / `DO_NOT_TRACK` worked.
+- Telemetry and `update --check` report the full version (for example 11.0.1), so an installed
+  hotfix is recognised as up to date.
 
 ## 11.0.0
 

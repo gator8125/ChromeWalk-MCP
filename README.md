@@ -196,7 +196,7 @@ connect` does under the hood for each one.
 
 1. Download the bundle for your platform from the latest
    [GitHub Release](https://github.com/gator8125/ChromeWalk-MCP/releases). Today that's
-   **`chromewalk-11.0.0-win32-x64.mcpb`** (Windows x64) — the only bundle actually built and
+   **`chromewalk-11.0.1-win32-x64.mcpb`** (Windows x64) — the only bundle actually built and
    published. macOS (`darwin-arm64` / `darwin-x64`) bundles are planned (see
    `.github/workflows/mcpb-binary.yml`, currently manual-dispatch-only and unvalidated) but
    are **not yet published**; there is no Linux `.mcpb` bundle.
