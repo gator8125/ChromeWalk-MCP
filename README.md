@@ -49,6 +49,84 @@ account/license/device-activation telemetry is collected.
 
 ---
 
+## What's new in 10.0
+
+**Reliability release.** MCP calls now run concurrently instead of serially, the browser layer
+cleans up after itself even when a call is cancelled or hangs, and every tool (CLI and MCP)
+shares one error/exit-code contract. Under multi-agent load (same machine, both licensed, 3
+reps per scenario):
+
+| Scenario | 9.0 | 10.0 |
+|---|---|---|
+| 8 pipelined MCP calls | fully serial; p50 24.4s, max 47.4s | up to 6 browsers at once; p50 8.9s, max 15.1s |
+| 2 servers x (4 calls + 1 hang) | the hung call blocks every call behind it; up to 3 browser processes left after exit | other calls unaffected; every cancel honoured; 0 browser processes left |
+| a forced tool timeout | server wedged, nothing answered within 120s; 10-14 browser processes left | a structured timeout error in 5-10s; 0 browser processes left |
+| 12 parallel smoke runs on a saturated CPU | 3 launch failures | 0 launch failures (about 59% slower wall time — launch slots are throttled above 90% CPU) |
+
+- **New `compare` tool** — page-vs-page, directory, or saved-baseline diffs across visual, DOM,
+  text, network, structured-data, SEO, links, styles, accessibility, console, headers and
+  performance layers, with noise calibration across repeated captures.
+- **New diagnostics** — `doctor` (read-only environment health check), `procs` (census of
+  ChromeWalk's own browser process trees, with orphan cleanup), `schema` (JSON-LD / microdata /
+  RDFa / OpenGraph validation and diff), `cms` (platform fingerprint), and `config` (every
+  tuning key, its effective value, and where it came from). The diagnostics work **without** a
+  license, so they're how you debug a broken license or install.
+- **Tunable configuration** — `chromewalk config show|get|set|unset` covers worker/agent counts,
+  launch retries and backoff, connect/command timeouts, the circuit-breaker threshold, profile
+  mode, default resource blocking, and more (flag > environment variable > config file > auto).
+- **One exit-code contract everywhere:**
+
+  | code | meaning |
+  |---|---|
+  | 0 | ok |
+  | 2 | usage / bad arguments |
+  | 3 | checked failure — the tool ran and the target failed a check (a diff, a missing required field, a page that never loaded); still a valid result |
+  | 4 | license required |
+  | 5 | infrastructure failure — browser launch/connect failed after retries, or a dependency is missing; retry, or run the `doctor` tool |
+  | 6 | timed out or cancelled |
+  | 1 | unexpected internal error |
+
+- An unreachable page is now reported as a real failure (exit `3`) instead of a false "success"
+  against the browser's own error page, and navigation now actually stops at your timeout.
+
+## Tools
+
+ChromeWalk exposes 26 MCP tools once installed and licensed. The diagnostic tools (`doctor`,
+`procs`, `config`, `calls`, `cancel`) work without a license — they're how you check a broken
+install or license state.
+
+- `fetch` — WAF-bypass fetch through a real browser: status, title, text, validation, optional raw response bodies
+- `screenshot` — screenshot or walk one URL or a list of URLs
+- `render` — cross-engine render (Chromium/WebKit/Firefox) with pixel diff / A-B / golden baselines
+- `webinspect` — console errors, HAR capture, Core Web Vitals, a light accessibility pass
+- `pwa` — manifest / service worker / offline reload / HTTPS / installability checks
+- `notify` — Web Notifications permission grant/deny plus captured notifications
+- `jsonquery` — query/flatten JSON or YMM trees, CSV export (no browser needed)
+- `api` — parallel API suite runner with adaptive anti-spam back-off
+- `flow` — scripted SPA flow (goto/click/type/wait_for/capture) to reach auth/role-gated views
+- `dump` — full-evidence capture: every response, raw bodies, and screenshots, multi-agent, memory-governed
+- `drive` — drive a running browser window by CDP: navigate/read/eval/screenshot, or ask a chat app
+- `smoke` — concurrent self-verifying smoke gate (page x viewport units, layout detectors, steps/asserts)
+- `harvest` — e-commerce harvester: normalized products (sku/price/availability/fitment/metafields)
+- `facets` — store-level filter/fitment axes (metafield keys, option values, axis-tree JSON assets)
+- `xengine` — the smoke-detector library run across real Chromium/Firefox/WebKit with a divergence report
+- `resources` — live RAM/CPU/pagefile plus a memory-aware recommended worker count (no browser)
+- `sites_list` — list the configured named sites
+- `logs` — read the shared event log: summary / errors / tail
+- `doctor` *(no license required)* — read-only environment health check (dependencies, engines, browser launch/CDP, orphans, config)
+- `procs` *(no license required)* — census of ChromeWalk's own browser process trees with an orphan verdict; can reap verified orphans
+- `schema` — structured data (JSON-LD, microdata, RDFa, OpenGraph) plus Google required/recommended validation and diff
+- `cms` — CMS/platform fingerprint with evidence
+- `config` *(no license required)* — show the tuning config (value + source per key), or get one key
+- `compare` — page vs page / snapshot / baseline diff across visual, DOM, text, network, schema, SEO, and more layers
+- `calls` *(no license required)* — this server's in-flight and recent calls, or one call's state/result
+- `cancel` *(no license required)* — cancel an in-flight call; its whole browser process tree is killed
+
+Full per-tool reference: https://chromewalk.com/docs/tool-fetch.html (and the sibling
+`tool-*.html` pages under https://chromewalk.com/docs/).
+
+---
+
 ## Install the ChromeWalk binary (once, per machine)
 
 Every client below talks to one local ChromeWalk install. Install it first:
@@ -117,7 +195,7 @@ connect` does under the hood for each one.
 
 1. Download the bundle for your platform from the latest
    [GitHub Release](https://github.com/gator8125/ChromeWalk-MCP/releases). Today that's
-   **`chromewalk-9.0.0-win32-x64.mcpb`** (Windows x64) — the only bundle actually built and
+   **`chromewalk-10.0.0-win32-x64.mcpb`** (Windows x64) — the only bundle actually built and
    published. macOS (`darwin-arm64` / `darwin-x64`) bundles are planned (see
    `.github/workflows/mcpb-binary.yml`, currently manual-dispatch-only and unvalidated) but
    are **not yet published**; there is no Linux `.mcpb` bundle.

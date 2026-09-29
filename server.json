@@ -2,8 +2,8 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.gator8125/chromewalk",
   "title": "ChromeWalk",
-  "description": "ChromeWalk - Local browser automation toolkit for AI agents. Real-browser bypasses for WAF, JS challenges, dynamic content. Fetch, flow, webinspect, screenshot, harvest, API testing, and more via standard MCP - all on your machine, never in the cloud.",
-  "version": "9.0.0",
+  "description": "ChromeWalk - Local browser automation toolkit for AI agents. Real-browser bypasses for WAF, JS challenges, dynamic content. Fetch, dump, compare, schema, smoke, harvest, API testing and more (26 MCP tools) via standard MCP - all on your machine, never in the cloud.",
+  "version": "10.0.0",
   "repository": {
     "url": "https://github.com/gator8125/ChromeWalk-MCP",
     "source": "github"
@@ -12,25 +12,30 @@
   "packages": [
     {
       "registryType": "mcpb",
-      "identifier": "https://github.com/gator8125/ChromeWalk-MCP/releases/download/v9.0.0/chromewalk-9.0.0-win32-x64.mcpb",
+      "identifier": "https://github.com/gator8125/ChromeWalk-MCP/releases/download/v10.0.0/chromewalk-10.0.0-win32-x64.mcpb",
       "transport": {
         "type": "stdio"
       },
       "environmentVariables": [
         {
           "name": "CHROMEWALK_LICENSE",
-          "description": "License key (sign up at https://api.chromewalk.com/register.html or run `chromewalk register <your-email>`). Read once when the MCP server starts and used to activate this device if it is not already activated. Alternatively run `chromewalk activate <key>`. Without an activated license every tool call returns a license-required error.",
+          "description": "License key (sign up at https://api.chromewalk.com/register.html or run `chromewalk register <your-email>`). Read once when the MCP server starts and used to activate this device if it is not already activated (the same value as the bundle's license_key setting). Alternatively run `chromewalk activate <key>`. Without an activated license every licensed tool call returns a license-required error.",
           "isRequired": false,
           "isSecret": true
+        },
+        {
+          "name": "CHROMEWALK_DATA_DIR",
+          "description": "Optional per-process data directory (profiles, output, logs, license state). Defaults to %LOCALAPPDATA%\\ChromeWalk on Windows, ~/Library/Application Support/ChromeWalk on macOS.",
+          "isRequired": false
         }
       ],
-      "fileSha256": "c217800b3baa907b6611eb7ff446fa15dc6feeb62e974b851172bf8cdeeb32f5"
+      "fileSha256": "b12eb1ef4f920ea812d71c8bbaab178d540e5542df68fbbb2e228bf03fd90d42"
     }
   ],
   "_meta": {
     "io.modelcontextprotocol.registry/publisher-provided": {
       "license_model": "proprietary",
-      "license_requirement": "License key required to use ChromeWalk tools - sign up at https://api.chromewalk.com/register.html or run `chromewalk register <your-email>`; activate via the CHROMEWALK_LICENSE env var, the bundle's license_key setting, or `chromewalk activate <key>`. There is no keyless trial: until a license is activated, every tool call returns a license-required error. An offline grace window applies only to an already-activated license that cannot reach the license server.",
+      "license_requirement": "License required, fail-closed. Sign up at https://api.chromewalk.com/register.html or run `chromewalk register <your-email>`; activate via the CHROMEWALK_LICENSE env var, the bundle's license_key setting, or `chromewalk activate <key>`. There is no keyless trial: until a license is activated, every licensed tool call returns a license-required error (CLI exit 4). A missing, malformed, tampered, revoked or expired license, or any error while evaluating it, blocks the call - it never falls open. The only allowance is an offline grace window for an already-activated, signed license that cannot reach the license server. The diagnostics chromewalk_doctor, chromewalk_procs, chromewalk_config (show/get) and the dispatcher built-ins chromewalk_calls / chromewalk_cancel work without a license.",
       "python_version": ">=3.10",
       "platform_support": [
         "windows",
