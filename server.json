@@ -2,8 +2,8 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.gator8125/chromewalk",
   "title": "ChromeWalk",
-  "description": "ChromeWalk - Local browser automation toolkit for AI agents. Real-browser bypasses for WAF, JS challenges, dynamic content. Fetch, dump, compare, schema, smoke, harvest, API testing and more (26 MCP tools) via standard MCP - all on your machine, never in the cloud.",
-  "version": "10.0.0",
+  "description": "ChromeWalk - Local browser automation toolkit for AI agents. Real-browser bypasses for WAF, JS challenges, dynamic content. Fetch, dump, compare, design audit, schema, smoke, harvest, API testing and more (31 MCP tools) via standard MCP - all on your machine, never in the cloud.",
+  "version": "11.0.0",
   "repository": {
     "url": "https://github.com/gator8125/ChromeWalk-MCP",
     "source": "github"
@@ -12,7 +12,7 @@
   "packages": [
     {
       "registryType": "mcpb",
-      "identifier": "https://github.com/gator8125/ChromeWalk-MCP/releases/download/v10.0.0/chromewalk-10.0.0-win32-x64.mcpb",
+      "identifier": "https://github.com/gator8125/ChromeWalk-MCP/releases/download/v11.0.0/chromewalk-11.0.0-win32-x64.mcpb",
       "transport": {
         "type": "stdio"
       },
@@ -29,7 +29,7 @@
           "isRequired": false
         }
       ],
-      "fileSha256": "b12eb1ef4f920ea812d71c8bbaab178d540e5542df68fbbb2e228bf03fd90d42"
+      "fileSha256": "6c593e833249ee6dfb24f462f6f1665c9c5729aaba9c5c6361f960e53f12dcb9"
     }
   ],
   "_meta": {

@@ -50,9 +50,9 @@ does the same for every supported client in one pass.
 
 ## Tools
 
-ChromeWalk exposes 26 MCP tools once running (fetch, screenshot, render, webinspect,
+ChromeWalk exposes 31 MCP tools once running (fetch, screenshot, render, webinspect,
 pwa, notify, jsonquery, api, flow, dump, drive, smoke, harvest, facets, xengine,
-resources, sites_list, logs, doctor, procs, schema, cms, config, compare, calls,
+resources, sites_list, logs, doctor, procs, schema, cms, config, compare, design, calls,
 cancel). The diagnostic tools (`doctor`, `procs`, `config`, `calls`, `cancel`) work
 without a license. Full reference: https://chromewalk.com/docs/tool-fetch.html
 (and the sibling `tool-*.html` pages under https://chromewalk.com/docs/).

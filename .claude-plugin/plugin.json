@@ -1,7 +1,7 @@
 {
   "name": "chromewalk",
   "displayName": "ChromeWalk",
-  "version": "10.0.0",
+  "version": "11.0.0",
   "description": "Real local browser automation for Claude Code - WAF-safe fetch, full-evidence capture, e-commerce harvesting, cross-engine QA. Runs entirely on your machine via the separately installed, licensed ChromeWalk binary (chromewalk.com).",
   "author": {
     "name": "CassiCode",
