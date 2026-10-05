@@ -2,8 +2,8 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.gator8125/chromewalk",
   "title": "ChromeWalk",
-  "description": "ChromeWalk - Local browser automation toolkit for AI agents. Real-browser bypasses for WAF, JS challenges, dynamic content. Fetch, dump, compare, design audit, schema, smoke, harvest, API testing and more (31 MCP tools) via standard MCP - all on your machine, never in the cloud.",
-  "version": "11.0.1",
+  "description": "ChromeWalk - Local browser automation toolkit for AI agents. Real-browser bypasses for WAF, JS challenges, dynamic content. Fetch, dump, compare, design audit, schema, smoke, harvest, preflight probe, API testing and more (33 MCP tools) via standard MCP - all on your machine, never in the cloud.",
+  "version": "12.0.0",
   "repository": {
     "url": "https://github.com/gator8125/ChromeWalk-MCP",
     "source": "github"
@@ -12,7 +12,7 @@
   "packages": [
     {
       "registryType": "mcpb",
-      "identifier": "https://github.com/gator8125/ChromeWalk-MCP/releases/download/v11.0.1/chromewalk-11.0.1-win32-x64.mcpb",
+      "identifier": "https://github.com/gator8125/ChromeWalk-MCP/releases/download/v12.0.0/chromewalk-12.0.0-win32-x64.mcpb",
       "transport": {
         "type": "stdio"
       },
@@ -29,13 +29,13 @@
           "isRequired": false
         }
       ],
-      "fileSha256": "d620a22a0d1c74c1718568737d24e1699325fe11e1609b6dcb2c6ea53a9ae855"
+      "fileSha256": "a50dc8857614b453d2c03fce398133c80c19e3f91021a6f176004c7da557dbd3"
     }
   ],
   "_meta": {
     "io.modelcontextprotocol.registry/publisher-provided": {
       "license_model": "proprietary",
-      "license_requirement": "License required, fail-closed. Sign up at https://api.chromewalk.com/register.html or run `chromewalk register <your-email>`; activate via the CHROMEWALK_LICENSE env var, the bundle's license_key setting, or `chromewalk activate <key>`. There is no keyless trial: until a license is activated, every licensed tool call returns a license-required error (CLI exit 4). A missing, malformed, tampered, revoked or expired license, or any error while evaluating it, blocks the call - it never falls open. The only allowance is an offline grace window for an already-activated, signed license that cannot reach the license server. The diagnostics chromewalk_doctor, chromewalk_procs, chromewalk_config (show/get) and the dispatcher built-ins chromewalk_calls / chromewalk_cancel work without a license.",
+      "license_requirement": "License required, fail-closed. Sign up at https://api.chromewalk.com/register.html or run `chromewalk register <your-email>`; activate via the CHROMEWALK_LICENSE env var, the bundle's license_key setting, or `chromewalk activate <key>`. There is no keyless trial: until a license is activated, every licensed tool call returns a license-required error (CLI exit 4). A missing, malformed, tampered, revoked or expired license, or any error while evaluating it, blocks the call - it never falls open. The only allowance is an offline grace window for an already-activated, signed license that cannot reach the license server. The diagnostics chromewalk_doctor, chromewalk_procs, chromewalk_config (show/get), the recovery tool chromewalk_reset (soft), the gap-report tool chromewalk_recommend and the dispatcher built-ins chromewalk_calls / chromewalk_cancel work without a license.",
       "python_version": ">=3.10",
       "platform_support": [
         "windows",

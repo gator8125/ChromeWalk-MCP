@@ -43,9 +43,25 @@ cannot reach the license server - it is not a keyless trial.)
    - pasting the key into the client's own extension/plugin settings UI (Claude Desktop
      `.mcpb` exposes a `license_key` field in `user_config`).
 
-ChromeWalk does **not** collect the URLs you visit, page content, file paths, or credentials.
-See the [Privacy Policy](https://chromewalk.com/privacy.html) for exactly what limited
-account/license/device-activation telemetry is collected.
+ChromeWalk does **not** collect page content, option values, file paths, or credentials. Its usage
+telemetry is required by the license (there is no opt-out); from 12.0 each tool run reports the
+target URL (scheme, host and path - credentials, query strings and fragments are removed on your
+computer first) and its domain. Your license key itself is never sent in telemetry, only a SHA-256
+hash of it (`license_hash`), which links the install to your account. See the
+[Privacy Policy](https://chromewalk.com/privacy.html) for exactly what is collected.
+
+---
+
+## What's new in 12.0
+
+- **`audit`** (one-pass UI-uniformity audit bundle) and **`baseline`** (per-page and per-selector visual
+  regression with an anti-clobber gate) - 33 MCP tools.
+- **Smoke**: slow is not failed, failure artifact bundles, changed-pages-only runs, a base-URL override,
+  fewer infrastructure flakes.
+- **Pre-capture hooks and browser options** on every capture tool (waits, scripts, attributes, console
+  noise filters; language, time zone, throttling, reduced motion, `auth`).
+- **Headless by default**, a **self-updating Windows app** (signed, self-tested, automatic rollback), and
+  end-to-end recipes in the docs. Full notes: [CHANGELOG.md](./CHANGELOG.md).
 
 ---
 
@@ -91,8 +107,8 @@ reps per scenario):
 
 ## Tools
 
-ChromeWalk exposes 31 MCP tools once installed and licensed. The diagnostic tools (`doctor`,
-`procs`, `config`, `calls`, `cancel`) work without a license — they're how you check a broken
+ChromeWalk exposes 33 MCP tools once installed and licensed. The diagnostic tools (`doctor`,
+`procs`, `config`, `reset`, `recommend`, `calls`, `cancel`) work without a license — they're how you check a broken
 install or license state.
 
 - `fetch` — WAF-bypass fetch through a real browser: status, title, text, validation, optional raw response bodies
@@ -120,6 +136,12 @@ install or license state.
 - `config` *(no license required)* — show the tuning config (value + source per key), or get one key
 - `compare` — page vs page / snapshot / baseline diff across visual, DOM, text, network, schema, SEO, and more layers, plus the 11.0 design-drift layers (design tokens, components, CSS rules, UX heuristics, perceptual similarity)
 - `design` — site-wide UI/UX design audit: design-token inventory with swatches and type scale, design-system conformance, component variant clusters with element crops, UX heuristic failures (contrast, tap targets, focus visibility, overflow, layout shift, above-the-fold CTA), drift against a saved baseline, and a score per page
+- `audit` — one-pass UI-uniformity audit bundle (audit.md + audit.json + shots/): uniformity ranking against a reference page, idiom census, element crops and a component sheet, design-token compliance per selector, responsive deltas, light/dark themes
+- `baseline` — stored-baseline visual regression per page and per selector (SSIM), with an anti-clobber gate for the pages a change should not have touched
+- `probe` — no-browser preflight of a URL: DNS/TCP/TLS, status, WAF/challenge, login wall, render class and a recommended strategy
+- `targets` — what ChromeWalk learned per host (wait strategy, timeouts, verdicts); show or forget
+- `reset` *(no license required)* — soft recovery: orphaned browsers, stale locks, the profile pool
+- `recommend` *(no license required)* — file a gap / bug report locally (secrets scrubbed)
 - `calls` *(no license required)* — this server's in-flight and recent calls, or one call's state/result
 - `cancel` *(no license required)* — cancel an in-flight call; its whole browser process tree is killed
 
@@ -196,7 +218,7 @@ connect` does under the hood for each one.
 
 1. Download the bundle for your platform from the latest
    [GitHub Release](https://github.com/gator8125/ChromeWalk-MCP/releases). Today that's
-   **`chromewalk-11.0.1-win32-x64.mcpb`** (Windows x64) — the only bundle actually built and
+   **`chromewalk-12.0.0-win32-x64.mcpb`** (Windows x64) — the only bundle actually built and
    published. macOS (`darwin-arm64` / `darwin-x64`) bundles are planned (see
    `.github/workflows/mcpb-binary.yml`, currently manual-dispatch-only and unvalidated) but
    are **not yet published**; there is no Linux `.mcpb` bundle.

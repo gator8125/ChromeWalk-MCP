@@ -2,7 +2,7 @@
 
 Release notes for ChromeWalk live with each [GitHub Release](https://github.com/gator8125/ChromeWalk-MCP/releases) —
 every tagged release (`vX.Y.Z`) has its own notes describing what changed, alongside the
-downloadable per-platform `.mcpb` bundle(s) (e.g. `chromewalk-11.0.1-win32-x64.mcpb` for
+downloadable per-platform `.mcpb` bundle(s) (e.g. `chromewalk-12.0.0-win32-x64.mcpb` for
 Windows x64) and platform installers.
 
 This repository is a listing/install package, not the ChromeWalk source tree, so it does not
@@ -13,18 +13,39 @@ refactors, and packaging work across many pre-release forks). What you get here 
   the latest release.
 - The **user-facing** highlights for that release, copied into each GitHub Release's notes.
 
-## 11.0.1
+## 12.0.0
 
-**Hotfix, recommended for all 11.0.0 users.**
-- Fixes pages that never load: smoke reporting "timeout: document never became interactive", and
-  fetch ending on about:blank. This was most visible when the ChromeWalk data folder is on a slower
-  (HDD) disk. Navigations Chrome cancels while a fresh profile is still starting are now retried.
-- Removes a redundant cookie-clear step that stalled each browser launch by up to 30 s.
-- `fetch` no longer crashes when printing page text that the Windows console can't display.
-- The documented opt-out `CW_TELEMETRY=off` now actually turns telemetry off. Before, only
-  `CHROMEWALK_NO_TELEMETRY` / `DO_NOT_TRACK` worked.
-- Telemetry and `update --check` report the full version (for example 11.0.1), so an installed
-  hotfix is recognised as up to date.
+**Feedback-driven polish + auto-update.** 33 MCP tools.
+
+- **New tool `audit`** - a one-pass UI-uniformity audit: every page ranked by uniformity against a
+  reference page, an idiom census (which sections skip your approved components), element crops and a
+  component sheet, design-token compliance per CSS selector, responsive differences between viewports,
+  and light/dark themes - as one `audit.md` + `audit.json` + `shots/` bundle.
+- **New tool `baseline`** - stored-baseline visual regression per page and per selector (SSIM), with a
+  gate for the pages a change should NOT have touched.
+- **Smoke tells slow from failed** - a clean but slow page is reported `slow`, not failed; every failed or
+  slow page gets an artifact bundle (screenshot, console, failed requests, DOM, timings); runs can be
+  limited to the pages a change touches (`changed` / `git_diff` with a route map) and pointed at another
+  environment (`base_url`); fewer infrastructure flakes on busy or slow-disk machines.
+- **The same pre-capture hooks and browser options everywhere** - wait for a selector or a quiet network,
+  run a script, set an attribute (e.g. a dark theme), ignore known console noise; language, time zone,
+  device scale, reduced motion, third-party blocking, CPU / network throttling, and `auth` (a
+  localStorage token, never logged).
+- **Headless by default** - no browser window pops up unless you ask for one (`headful`).
+- **The Windows app updates itself** - signed and checksum-verified, self-tested with a real page load
+  after installing, rolled back automatically if that fails. The check always runs; applying a release
+  can be deferred up to 30 days. Claude Desktop extension users get a one-line notice when a newer
+  version exists.
+- **API testing** - an expected status (e.g. 503) is never treated as a block; secret values in responses
+  are redacted everywhere unless you explicitly opt in to raw bodies.
+- **Telemetry** - required by the license with no opt-out; each tool run now reports the target URL
+  (scheme, host and path; credentials, query strings and fragments are removed on your computer first)
+  and its domain. Page content, option values, file paths and credentials are never sent. Telemetry
+  carries only a SHA-256 hash of your license key (`license_hash`), never the key itself. See the
+  updated [Privacy Policy](https://chromewalk.com/privacy.html).
+- **Docs** - end-to-end recipes (`chromewalk help recipes`: UI uniformity audit, release-gate smoke,
+  cross-engine check, authed capture, reading design results) and a "Related tools" footer on every tool
+  page.
 
 ## 11.0.0
 
