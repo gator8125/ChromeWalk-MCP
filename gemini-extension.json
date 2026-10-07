@@ -1,6 +1,6 @@
 {
   "name": "chromewalk",
-  "version": "12.0.0",
+  "version": "13.0.0",
   "description": "Real local browser automation for Gemini CLI - WAF-safe fetch, full-evidence capture, e-commerce harvesting, cross-engine QA. Runs entirely on your machine via the locally installed ChromeWalk binary (chromewalk.com); requires a license key.",
   "mcpServers": {
     "chromewalk": {

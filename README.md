@@ -33,8 +33,9 @@ activated on the machine, every ChromeWalk tool call returns a "license required
 (The offline grace window applies only to an already-activated license that temporarily
 cannot reach the license server - it is not a keyless trial.)
 
-1. Sign up at **https://chromewalk.com/register.html** with your email. Your license key is
-   tied to that email address.
+1. Sign up at **https://chromewalk.com/register.html** with your email - or, from 13.0, just ask your
+   AI assistant to sign you up: the `register` tool emails your key, and the `activate` tool activates
+   it, both inside the chat and without a license. Your license key is tied to that email address.
 2. Install ChromeWalk for your client (below).
 3. Activate with either:
    - the `CHROMEWALK_LICENSE` environment variable (read once when the MCP server starts;
@@ -49,6 +50,32 @@ target URL (scheme, host and path - credentials, query strings and fragments are
 computer first) and its domain. Your license key itself is never sent in telemetry, only a SHA-256
 hash of it (`license_hash`), which links the install to your account. See the
 [Privacy Policy](https://chromewalk.com/privacy.html) for exactly what is collected.
+
+---
+
+## What's new in 13.0
+
+**Test the flows, not just the pages.** 35 MCP tools.
+
+- **Sign up and activate from your AI assistant** (`register`, `activate`) - no terminal needed. The
+  Claude Desktop extension's license key field is optional.
+- **Activate once per computer** - `cw activate <key> --remember` keeps the key in Windows Credential
+  Manager and every other install for your user activates itself; `CHROMEWALK_LICENSE_FILE` for CI.
+- **Click-flow coverage in smoke** - every scripted step can carry an `expect`, each step is checked for the
+  errors and failed requests it caused (a failed step now fails the page), `explore` clicks the safe
+  controls you never scripted (never delete / log out / pay / submit), and `coverage` reports what was
+  exercised.
+- **Logged-in testing on Firefox and WebKit** - `xengine` and `render` take `session`, `auth` and
+  `local_storage_file`, and `xengine` runs the suite's steps, checks and Explore on every engine.
+- **Microsoft Edge and Brave** - `browser: "edge" | "brave" | "chrome"` (or a path) on smoke, fetch,
+  dump, screenshot, compare, design, audit and webinspect, always with ChromeWalk's own private profile.
+- **Reliability** - a killed run no longer leaves Chrome behind; large design / audit runs are batched
+  and resumable (`resume`); runs report where their time went; `doctor` shows the install folders and
+  explains slow starts.
+- **More AI tools in one command** - `cw connect` adds GitHub Copilot CLI, Kiro, Amazon Q Developer,
+  Kilo Code, Goose and Visual Studio.
+- **Skills** for Claude Code, Cursor and Codex in [`skills/`](./skills/) - copy them into your agent's
+  skills folder.
 
 ---
 
@@ -107,9 +134,12 @@ reps per scenario):
 
 ## Tools
 
-ChromeWalk exposes 33 MCP tools once installed and licensed. The diagnostic tools (`doctor`,
-`procs`, `config`, `reset`, `recommend`, `calls`, `cancel`) work without a license — they're how you check a broken
-install or license state.
+ChromeWalk exposes 35 MCP tools once installed and licensed. The sign-up tools (`register`,
+`activate`) and the diagnostic tools (`doctor`, `procs`, `config`, `reset`, `recommend`, `calls`, `cancel`)
+work without a license — they're how you get a key and check a broken install or license state.
+
+- `register` *(no license required)* — sign up: the license key is emailed to the address you give (never shown in the chat)
+- `activate` *(no license required)* — activate this install with your key (the key is never echoed back)
 
 - `fetch` — WAF-bypass fetch through a real browser: status, title, text, validation, optional raw response bodies
 - `screenshot` — screenshot or walk one URL or a list of URLs
@@ -218,13 +248,14 @@ connect` does under the hood for each one.
 
 1. Download the bundle for your platform from the latest
    [GitHub Release](https://github.com/gator8125/ChromeWalk-MCP/releases). Today that's
-   **`chromewalk-12.0.0-win32-x64.mcpb`** (Windows x64) — the only bundle actually built and
+   **`chromewalk-13.0.0-win32-x64.mcpb`** (Windows x64) — the only bundle actually built and
    published. macOS (`darwin-arm64` / `darwin-x64`) bundles are planned (see
    `.github/workflows/mcpb-binary.yml`, currently manual-dispatch-only and unvalidated) but
    are **not yet published**; there is no Linux `.mcpb` bundle.
 2. Double-click it, or drag it onto Claude Desktop's Settings → Extensions panel.
-3. Enter your license key in the extension's settings (`license_key` field), or run
-   `cw activate <key>` if you also installed the `cw` CLI.
+3. Enter your license key in the extension's settings (`license_key` field, optional), run
+   `cw activate <key>` if you also installed the `cw` CLI, or leave it empty and ask Claude to sign
+   you up (the `register` / `activate` tools).
 
 Full walkthrough: https://chromewalk.com/docs/install-claude-desktop.html
 

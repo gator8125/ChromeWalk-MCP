@@ -2,7 +2,7 @@
 
 Release notes for ChromeWalk live with each [GitHub Release](https://github.com/gator8125/ChromeWalk-MCP/releases) —
 every tagged release (`vX.Y.Z`) has its own notes describing what changed, alongside the
-downloadable per-platform `.mcpb` bundle(s) (e.g. `chromewalk-12.0.0-win32-x64.mcpb` for
+downloadable per-platform `.mcpb` bundle(s) (e.g. `chromewalk-13.0.0-win32-x64.mcpb` for
 Windows x64) and platform installers.
 
 This repository is a listing/install package, not the ChromeWalk source tree, so it does not
@@ -12,6 +12,38 @@ refactors, and packaging work across many pre-release forks). What you get here 
 - The current `server.json` / `gemini-extension.json` / plugin manifests, versioned to match
   the latest release.
 - The **user-facing** highlights for that release, copied into each GitHub Release's notes.
+
+## 13.0.0
+
+**Test the flows, not just the pages.** 35 MCP tools (was 33).
+
+- **Sign up and activate inside the chat** - new tools `register` (emails your license key; it is never
+  shown in the chat) and `activate` (never echoes the key); both work without a license, and a "license
+  required" answer now tells the assistant to offer them. The Claude Desktop extension's license key field
+  is optional.
+- **Activate once per computer** - `cw activate <key> --remember` stores the key in Windows Credential
+  Manager; other installs for the same Windows user activate themselves. `CHROMEWALK_LICENSE_FILE` reads
+  the key from a file (CI). `cw connect` never writes a key into an AI client's config.
+- **Setup finishes the job** - it installs the Firefox / WebKit / Chromium test engines too and ends with
+  a `doctor` verdict.
+- **Click-flow coverage in smoke** - per-step `expect` (element present / gone, text, URL change),
+  automatic checks after every step (new errors, failed requests), `explore` (clicks up to N safe controls
+  per page - never delete, log out, pay, submit, form submits, downloads or other sites), and a per-page
+  `coverage` report. **A failed step now fails the page** (it used to be logged only).
+- **Logged-in cross-engine testing** - `xengine` and `render` accept `session`, `auth` and
+  `local_storage_file`; `xengine` runs steps, `expect`, `explore` and `coverage` on Chromium, Firefox and
+  WebKit.
+- **Microsoft Edge and Brave** - `browser` = `chrome` | `edge` | `brave` | `cft` (default) | a path, on
+  smoke, fetch, dump, screenshot, compare, design, audit and webinspect; ChromeWalk's own private profile,
+  never yours. An unknown `CHROMEWALK_BROWSER` value is now an error instead of a silent fallback.
+- **Reliability** - a hard-killed run no longer leaves its Chrome running; design and audit runs above 160
+  states run in batches with checkpoints and `resume`; smoke / design / audit report phase timings;
+  `doctor` lists the install folders (warns on a mixed install) and explains slow starts.
+- **API redaction** - secret-named fields inside JSON strings, escaped JSON fragments and XML elements are
+  masked too.
+- **More clients for `cw connect`** - GitHub Copilot CLI, Kiro, Amazon Q Developer, Kilo Code, Goose,
+  Visual Studio.
+- **Skills** for Claude Code, Cursor and Codex: the [`skills/`](./skills/) folder of this repository.
 
 ## 12.0.0
 
